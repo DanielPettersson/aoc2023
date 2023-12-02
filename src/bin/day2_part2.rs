@@ -1,18 +1,12 @@
 use aoc2023::day_input;
 
-const MAX_RED: u32 = 12;
-const MAX_GREEN: u32 = 13;
-const MAX_BLUE: u32 = 14;
-
 fn main() {
-    let answer: u32 = day_input::lines().map(parse_game).filter(|g| g.is_possible()).map(|g| g.id).sum();
+    let answer: u32 = day_input::lines().map(parse_game).map(|g| g.get_power()).sum();
     println!("{answer}");
 }
 
 fn parse_game(line: &str) -> Game {
     let split_game: Vec<&str> = line.split(':').collect();
-    let id: u32  = split_game.first().unwrap()[5..].parse().unwrap();
-
     let split_draws: Vec<&str> = split_game.last().unwrap().split(';').collect();
     let mut draws: Vec<Draw> = Vec::with_capacity(split_draws.len());
 
@@ -33,19 +27,20 @@ fn parse_game(line: &str) -> Game {
     }
 
     Game {
-        id,
         draws,
     }
 }
 
 struct Game {
-    id: u32,
     draws: Vec<Draw>
 }
 
 impl Game {
-    fn is_possible(&self) -> bool {
-        self.draws.iter().all(|d| d.is_possible())
+    fn get_power(&self) -> u32 {
+        let max_red = self.draws.iter().map(|d| d.red).max().unwrap_or(0);
+        let max_green = self.draws.iter().map(|d| d.green).max().unwrap_or(0);
+        let max_blue = self.draws.iter().map(|d| d.blue).max().unwrap_or(0);
+        max_red * max_green * max_blue
     }
 }
 
@@ -54,10 +49,4 @@ struct Draw {
     red: u32,
     green: u32,
     blue: u32
-}
-
-impl Draw {
-    fn is_possible(&self) -> bool {
-        self.red <= MAX_RED && self.green <= MAX_GREEN && self.blue <= MAX_BLUE
-    }
 }
