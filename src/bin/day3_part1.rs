@@ -40,7 +40,7 @@ fn get_symbols(lines: Lines) -> HashMap<Pos, Symbol> {
     for (y, line) in lines.enumerate() {
         for (x, c) in line.chars().enumerate() {
             if !c.is_numeric() && c != '.' {
-                ret.insert( Pos::from_usize(x, y), Symbol { symbol: c });
+                ret.insert( Pos::from_usize(x, y), Symbol {});
             }
         }
     }
@@ -69,7 +69,6 @@ struct Number {
 }
 
 struct Symbol {
-    symbol: char
 }
 
 #[derive(Eq, PartialEq, Hash)]
